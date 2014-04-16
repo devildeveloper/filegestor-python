@@ -3,6 +3,8 @@ import tornado.web
 from settings import settings
 from database import File,User, session
 from datetime import date
+
+import os
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render('index.html')
@@ -55,13 +57,13 @@ class UrlHandler(tornado.web.RequestHandler):
 				s=session()
 				q1=s.query(User).filter(User.name==user)
 				if(q1.count()==1):
-					q2=s.query(File).filter(File.user_id==q1.id,File.name==arch)
-					if(q2.count() == 1):
-						if(q2.expiration < date.today()):
+					q2=s.query(File).filter(File.user_id==q1[0].id,File.name==arch)
+					if(q2.count() > 0):
+						#if(q2[0].expiration < str(date.today())):
 							dl=os.path.join(os.path.dirname(__file__), "uploads/",user,"/",arch)
 							self.write(dl)
-						else:
-							self.write('expired link')
+						#else:
+						#	self.write('expired link')
 					else:
 						self.write('invalid file')
 				else:
