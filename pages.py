@@ -2,9 +2,11 @@ import tornado.web
 
 from settings import settings
 from database import File,User, session
-from datetime import date
 
+from datetime import date
+from tornado import httpclient 
 import os
+
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render('index.html')
@@ -42,6 +44,7 @@ class UploadHandler(tornado.web.RequestHandler):
 		s=session()
 		s.add(_file)
 		s.commit()
+		s.close()
 		self.finish("file " + original_fname + " is uploaded")	
 	
 			#self.write('error inesperado :s')	
@@ -60,8 +63,25 @@ class UrlHandler(tornado.web.RequestHandler):
 					q2=s.query(File).filter(File.user_id==q1[0].id,File.name==arch)
 					if(q2.count() > 0):
 						#if(q2[0].expiration < str(date.today())):
-							dl=os.path.join(os.path.dirname(__file__), "uploads/",user,"/",arch)
-							self.write(dl)
+						_file_dir = os.path.abspath("")+"/uploads/"+user
+						_file_path = "%s/%s" % (_file_dir, arch)
+						if not arch or not os.path.exists(_file_path):
+							raise httpclient.HTTPError(404)
+						self.set_header('Content-Type', 'application/force-download')
+						self.set_header('Content-Disposition', 'attachment; filename=%s' % arch)
+						with open(_file_path, "rb") as f:
+							try:
+								while True:
+									_buffer = f.read(4096)
+									if _buffer:
+										self.write(_buffer)
+									else:
+										f.close()
+										self.finish()
+										return
+							except:
+								raise httpclient.HTTPError(404)
+						raise httpclient.HTTPError(500)
 						#else:
 						#	self.write('expired link')
 					else:
@@ -70,6 +90,15 @@ class UrlHandler(tornado.web.RequestHandler):
 					self.write('invalid user')			
 			else:
 				self.write('invalids params')	
-
+class GetMyFiles(tornado.web.RequestHandler):
+	def get(self):
+		self.write('no autorizado')
+	def post(self):
+		user=self.get_argument("user")
+		user_id=self.get_argument("user_id")
+		s=session()
+		if(s.query(User).filter(User.id==user_id,User.name==user,User.status==1).count() == 1):
+			_files=s.query(File).filter(File.user_id==user_id,File.status==1).all()
+			self.render('user-files.html',user=user,user_id=user_id,files=_files)
 #class FileHanlder(tornado.web.RequestHandler):
 #	def get(self):

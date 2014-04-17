@@ -11,6 +11,7 @@ class User(Base):
 	name = Column(String)
 	passw=Column(String)
 	hired_on =Column(Date,default =func.now())
+	status=Column(Integer,default=1)#0 = user disabled
 
 class File(Base):
 	__tablename__='file'
@@ -18,6 +19,7 @@ class File(Base):
 	name=Column(String)
 	hired_on=Column(Date,default=func.now())
 	expiration=Column(String)
+	status=Column(Integer,default=1)#0 = user disabled	
 	user_id=Column(Integer,ForeignKey('user.id'))
 	user =relationship(
 		User,

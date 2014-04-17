@@ -1,0 +1,16 @@
+<html>
+<head>
+	<title></title>
+</head>
+<body>	
+	{% for file in files%}
+		<div>
+			<a href="/{{user}}/{{file.name}}">{{file.name}}</a>
+			<span> created: {{file.hired_on}}</span>
+			<span>expiration: {{file.expiration}}</span>
+		</div>
+		
+		
+	{%end%}
+</body>
+</html>
