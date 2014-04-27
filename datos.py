@@ -1,0 +1,1 @@
+datos=({"user":"admin","pass":"1234"},{"user":"normal","pass":"1234"})
