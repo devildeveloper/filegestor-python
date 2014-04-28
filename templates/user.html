@@ -4,6 +4,11 @@
 	<meta charset="UTF-8">
 	<title>User</title>
 	<link href="{{ static_url("css/smoothness/jquery-ui-1.10.4.custom.css") }}" rel="stylesheet">
+	<style type="text/css">
+		#datepicker{
+			display: none;
+		}
+	</style>
 	<script src="{{ static_url("js/jquery-1.10.2.js") }}"></script>
 	<script src="{{ static_url("js/jquery-ui-1.10.4.custom.js") }}"></script>
 </head>
@@ -11,11 +16,21 @@
 	hola {{ user }}
 	<form enctype="multipart/form-data" action="/upload" method="post">
 		<input type="file" name="file">
-		<input type="hidden" name='idol' value="{{user}}" >
+		<input type="hidden" name='user' value="{{user}}" >
+		<input type="hidden" name='user_id' value="{{user_id}}" >
 		<input type="submit" value="subir">
-		<input type="text" name='days' >
+		<input type="text" name='die' id='die' >
+		<div id='datepicker'></div>
 	</form>
 	<br><br>
 	<a href="/logout">salir</a>
+	<script type="text/javascript">
+		$(document).on('ready',function(){
+			$("#datepicker").datepicker()
+			$("#die").on('click',function(){
+				$("#datepicker").fadeToggle();
+			})
+		})
+	</script>
 </body>
 </html>
