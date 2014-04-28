@@ -1,23 +1,31 @@
+#!/usr/bin/env python
 import os.path
 
-import tornado.ioloop
-import tornado.web
 import tornado.httpserver
+import tornado.ioloop
 import tornado.options
-
+import tornado.web
+from tornado.options import define, options
+from settings import settings
 import urls
-import settings
+define("port", default=8000, help="run on the given port", type=int)
 
-from tornado.options import define , options
-define("port",default =8888 , help="run on the given port ", type=int)
-if __name__ == "__main__":
+class Application(tornado.web.Application):
+	def __init__(self):
+		handlers = urls.urls
+		settings = dict(
+			template_path=os.path.join(os.path.dirname(__file__), "templates"),
+			static_path=os.path.join(os.path.dirname(__file__), "static"),
+			debug=True,
+		)
+		tornado.web.Application.__init__(self, handlers, **settings)
+
+def main():
 	tornado.options.parse_command_line()
-	app=tornado.web.Application(
-		handlers=urls.urls,
-		template_path=settings.template_path,
-		static_path=settings.static_path,
-		debug=True
-	)
-	http_server=tornado.httpserver.HTTPServer(app)
+	http_server = tornado.httpserver.HTTPServer(Application())
 	http_server.listen(options.port)
 	tornado.ioloop.IOLoop.instance().start()
+
+
+if __name__ == "__main__":
+	main()

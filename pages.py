@@ -1,38 +1,32 @@
 import tornado.web
 
-from jinja2 import Environment, FileSystemLoader, TemplateNotFound
+from settings import settings
 
-import settings
 import datos
-env = Environment(loader=FileSystemLoader(settings.template_path))
 
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
-		template = env.get_template('index.html')
-		self.write(template.render())
+		self.render('index.html')
 
-class LoginHandler(IndexHandler):
+class LoginHandler(tornado.web.RequestHandler):
 	def get(self):
-		template = env.get_template('login.html')
-		self.write(template.render())
-
+		self.render('login.html')
 	def post(self):
 		flag = False;
 		for  dato  in datos.datos :
 			if dato['user'] == self.get_argument("user"):				
 				flag=True
 		if flag == True :
-			template = env.get_template('user.html')
-			self.write(template.render(user = self.get_argument("user"),static_url=settings.static_path))		
+			self.render('user.html',user=self.get_argument("user"))
 		else:
 			self.write('no valido')
 
-class LogoutHandler(IndexHandler):
+class LogoutHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.clear_cookie("user")
 		self.redirect(self.get_argument("next", "/"))
 
-class UploadHandler(IndexHandler):
+class UploadHandler(tornado.web.RequestHandler):
 	def post(self):
 		file1 = self.request.files['file'][0]
 		original_fname = file1['filename']
