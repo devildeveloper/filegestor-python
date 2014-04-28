@@ -2,7 +2,7 @@ import tornado.web
 
 from settings import settings
 from database import File,User, session
-
+from datetime import date
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
 		self.render('index.html')
@@ -32,15 +32,42 @@ class UploadHandler(tornado.web.RequestHandler):
 		original_fname = file1['filename']
 		user=self.get_argument("user")#nombre de usuario
 		user_id=self.get_argument("user_id")#id de usuario
+		die=self.get_argument("datepicker")#fecha de expiracion
 		output_file = open("uploads/"+user+"/" + original_fname, 'wb')
 		output_file.write(file1['body'])
 		#bbdd
-		_file=File(name=original_fname,user_id=int(user_id))
-		session().add(_file)
-		session().commit()
-		self.finish("file " + original_fname + " is uploaded")		
+		_file=File(name=original_fname,user_id=int(user_id),expiration=die)
+		s=session()
+		s.add(_file)
+		s.commit()
+		self.finish("file " + original_fname + " is uploaded")	
 	
 			#self.write('error inesperado :s')	
+class UrlHandler(tornado.web.RequestHandler):
+	def get(self,name):
+		if not name:
+			self.write('No params to read')
+		else:
+			path=name.split('/')
+			if(len(path) == 2):
+				user = name.split('/')[0]
+				arch = name.split('/')[1]
+				s=session()
+				q1=s.query(User).filter(User.name==user)
+				if(q1.count()==1):
+					q2=s.query(File).filter(File.user_id==q1.id,File.name==arch)
+					if(q2.count() == 1):
+						if(q2.expiration < date.today()):
+							dl=os.path.join(os.path.dirname(__file__), "uploads/",user,"/",arch)
+							self.write(dl)
+						else:
+							self.write('expired link')
+					else:
+						self.write('invalid file')
+				else:
+					self.write('invalid user')			
+			else:
+				self.write('invalids params')	
 
 #class FileHanlder(tornado.web.RequestHandler):
 #	def get(self):
