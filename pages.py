@@ -101,9 +101,9 @@ class GetMyFiles(tornado.web.RequestHandler):
 	def get(self):
 		user=self.get_secure_cookie("user")		
 		data=json.loads(user)	
-		s=session()
-		if(s.query(User).filter(User.id==int(user['user_id']),User.name==user['user'].encode('utf8'),User.status==1).count() == 1):
-			_files=s.query(File).filter(File.user_id==user_id,File.status==1).all()
-			self.render('user-files.html',user=user,user_id=user_id,files=_files)
+		s=session()		
+		if(s.query(User).filter(User.id==int(data['user_id']),User.name==data['user'].encode('utf8'),User.status==1).count() == 1):
+			_files=s.query(File).filter(File.user_id==data['user_id'],File.status==1).all()
+			self.render('user-files.html',user=data['user'],files=_files)
 #class FileHanlder(tornado.web.RequestHandler):
 #	def get(self):
