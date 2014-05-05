@@ -7,16 +7,29 @@ user_name = raw_input('ingrese el nombre de usuario ')
 user_pass = getpass('ingrese la clave de usuario ')
 confirm = raw_input('confirma creacion?(s/n) ')
 if confirm == 's' :
-	try:
-		d=User(name=user_name,passw=user_pass)
+	#creacion del usuario
+	try:		
 		s=session()
-		s.add(d)
-		s.commit()
-		os.system('mkdir uploads/'+user_name)
-		print('directorio creado con exito')
-	except :
-		print('no se pudo crear el directorio')
-else :
+		result=s.query(User).filter(User.name==user_name)
+		if result.count() >0:
+			print 'este usuario ya fue creado :('
+		else :			
+			d=User(name=user_name,passw=user_pass)
+			s.add(d)
+			s.commit()
+			print('usuario creado con exito')
+	except Exception as e:
+		print(e)
+	#creacion de su carpeta de uploads
+	try:		
+		if os.path.exists(os.path.join(os.getcwd(),'uploads')):
+			print ' el directorio ya existe'
+		else:			
+			os.system('mkdir uploads/'+user_name)
+			print('directorio creado con exito')		
+	except Exception as e:
+		print (e)
+else:
 	print('operacion cancelada')
 
 
