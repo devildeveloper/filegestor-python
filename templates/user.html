@@ -19,11 +19,7 @@
 	</form>
 	<br><br>
 	<a href="/logout">salir</a>
-	<form method='POST' action='/getfiles'>
-		<input type="hidden" name='user' value="{{user}}" >
-		<input type="hidden" name='user_id' value="{{user_id}}" >
-		<input type='submit' value='Listar archivos'>
-	</form>
+	<a href="/getfiles">Listar Archivos</a>
 	<script type="text/javascript">
 		$(document).on('ready',function(){
 			$("#datepicker").datepicker()

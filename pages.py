@@ -5,7 +5,9 @@ from database import File,User, session
 
 from datetime import date
 from tornado import httpclient 
+
 import os
+import json
 
 class IndexHandler(tornado.web.RequestHandler):
 	def get(self):
@@ -20,7 +22,10 @@ class LoginHandler(tornado.web.RequestHandler):
 		if(len(users) > 0):
 			for dato in users :
 				if dato.name == self.get_argument("user") and dato.passw==self.get_argument("pass"):					
-					self.render('user.html',user=self.get_argument("user"),user_id=dato.id)
+					vjson={'user_id':dato.id,'user':dato.name}					
+					#print json.dumps({'user_id':dato.id,'user':dato.name},sort_keys=True,indent=4)
+					self.set_secure_cookie("user", json.dumps(vjson))
+					self.render('user.html',user=dato.name,user_id=dato.id)
 					break		
 		else:
 			self.redirect('/')
@@ -62,28 +67,28 @@ class UrlHandler(tornado.web.RequestHandler):
 				if(q1.count()==1):
 					q2=s.query(File).filter(File.user_id==q1[0].id,File.name==arch)
 					if(q2.count() > 0):
-						if(q2[0].expiration < str(date.today())):
-							_file_dir = os.path.abspath("")+"/uploads/"+user
-							_file_path = "%s/%s" % (_file_dir, arch)
-							if not arch or not os.path.exists(_file_path):
+						#if(q2[0].expiration < str(date.today())):
+						_file_dir = os.path.abspath("")+"/uploads/"+user
+						_file_path = "%s/%s" % (_file_dir, arch)
+						if not arch or not os.path.exists(_file_path):
+							raise httpclient.HTTPError(404)
+						self.set_header('Content-Type', 'application/force-download')
+						self.set_header('Content-Disposition', 'attachment; filename=%s' % arch)
+						with open(_file_path, "rb") as f:
+							try:
+								while True:
+									_buffer = f.read(4096)
+									if _buffer:
+										self.write(_buffer)
+									else:
+										f.close()
+										self.finish()
+										return
+							except:
 								raise httpclient.HTTPError(404)
-							self.set_header('Content-Type', 'application/force-download')
-							self.set_header('Content-Disposition', 'attachment; filename=%s' % arch)
-							with open(_file_path, "rb") as f:
-								try:
-									while True:
-										_buffer = f.read(4096)
-										if _buffer:
-											self.write(_buffer)
-										else:
-											f.close()
-											self.finish()
-											return
-								except:
-									raise httpclient.HTTPError(404)
-							raise httpclient.HTTPError(500)
-						else:
-							self.write('expired link')
+						raise httpclient.HTTPError(500)
+						#else:
+						#	self.write('expired link')
 					else:
 						self.write('invalid file')
 				else:
@@ -91,13 +96,13 @@ class UrlHandler(tornado.web.RequestHandler):
 			else:
 				self.write('invalids params')	
 class GetMyFiles(tornado.web.RequestHandler):
+	#def get(self):
+	#	self.write('no autorizado')
 	def get(self):
-		self.write('no autorizado')
-	def post(self):
-		user=self.get_argument("user")
-		user_id=self.get_argument("user_id")
+		user=self.get_secure_cookie("user")		
+		data=json.loads(user)	
 		s=session()
-		if(s.query(User).filter(User.id==user_id,User.name==user,User.status==1).count() == 1):
+		if(s.query(User).filter(User.id==int(user['user_id']),User.name==user['user'].encode('utf8'),User.status==1).count() == 1):
 			_files=s.query(File).filter(File.user_id==user_id,File.status==1).all()
 			self.render('user-files.html',user=user,user_id=user_id,files=_files)
 #class FileHanlder(tornado.web.RequestHandler):
