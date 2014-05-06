@@ -5,6 +5,7 @@ urls=[
 		(r'/logout',pages.LogoutHandler),
 		(r'/upload',pages.UploadHandler),
 		(r'/getfiles',pages.GetMyFiles),
+		(r'/perfil',pages.Perfil),
 		(r'/(.*)',pages.UrlHandler),
 	]
 

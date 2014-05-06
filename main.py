@@ -3,13 +3,11 @@ import os.path
 
 import base64
 import uuid
-
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
 import tornado.web
 from tornado.options import define, options
-from settings import settings
 import urls
 define("port", default=8000, help="run on the given port", type=int)
 
