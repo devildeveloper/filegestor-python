@@ -1,14 +1,50 @@
 <html>
-<head>
-<title>Please Log In</title>
-</head>
-
-<body>
-<form action="/login" method="POST">
-    
-    <p>Username: <input type="text" name="user" /><p>
-     <p>Password: <input type="password" name="pass" /><p>
-    <p><input type="submit" value="Log In" /></p>
-</form>
-</body>
+	<head>
+		<title>Please Log In</title>
+		<meta charset="UTF-8">
+		<title>Dropy | gestor de archivos</title>
+		<link href="{{ static_url("css/foundation/normalize.css")}}" rel="stylesheet" >
+		<link href="{{ static_url("css/foundation/foundation.min.css")}}" rel="stylesheet" >
+		<style type="text/css">
+			form{
+				max-width: 400px;
+				margin: 0 auto;
+			}
+			.m50{
+				margin-top: 50px;
+			}
+			fieldset{
+				border: none;
+			}
+		</style>
+	</head>
+	<body>
+		<form action="/login" method="POST" class='m50'> 
+			<div class="row">
+				<div class="small-12 column text-center">
+					<h1 class="subheader">
+						Iniciar Sesion
+					</h1>
+				</div>
+			</div>
+			<fieldset class="row">
+				<div class='small-12 column'>
+					<label>
+						Usuario
+						<input type="text" name="user" />
+					</label>
+				</div>
+				<div class='small-12 column'>
+					<label>
+						Clave
+						<input type="password" name="pass" />
+					</label>
+				</div>	
+				<div class='small-12 column text-center'>
+					<input class="button success radius" type="submit" value="Enviar">
+					<input class="button alert radius" type="reset" value="Cancelar">
+				</div>			
+			</fieldset>  		    
+		</form>
+	</body>
 </html>
