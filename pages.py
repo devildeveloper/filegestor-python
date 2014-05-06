@@ -6,8 +6,17 @@ import os
 import json
 
 class IndexHandler(tornado.web.RequestHandler):
+	def post(self):
+		self.redirect('/')
 	def get(self):
-		self.render('index.html')
+		try:
+			user=self.get_secure_cookie("user")		
+			data=json.loads(user)	
+			s=session()		
+			if(s.query(User).filter(User.id==int(data['user_id']),User.name==data['user'].encode('utf8'),User.status==1).count() == 1):
+				self.render('user.html',user=data['user'],user_id=data['user_id'])
+		except:			
+			self.render('index.html')
 
 class LoginHandler(tornado.web.RequestHandler):
 	def get(self):
@@ -103,11 +112,14 @@ class GetMyFiles(tornado.web.RequestHandler):
 			self.render('user-files.html',user=data['user'],files=_files)
 
 class Perfil(tornado.web.RequestHandler):
-	def post():
+	def post(self):
 		self.write('no se porque estas viendo esto..')
 	def get(self):
-		user=self.get_secure_cookie("user")		
-		data=json.loads(user)	
-		s=session()		
-		if(s.query(User).filter(User.id==int(data['user_id']),User.name==data['user'].encode('utf8'),User.status==1).count() == 1):
-			self.render('user.html',user=data['user'],user_id=data['user_id'])		
+		try:
+			user=self.get_secure_cookie("user")		
+			data=json.loads(user)	
+			s=session()		
+			if(s.query(User).filter(User.id==int(data['user_id']),User.name==data['user'].encode('utf8'),User.status==1).count() == 1):
+				self.render('user.html',user=data['user'],user_id=data['user_id'])		
+		except:
+			self.redirect('/')
