@@ -6,16 +6,23 @@
 	<link href="{{ static_url("css/smoothness/jquery-ui-1.10.4.custom.css") }}" rel="stylesheet">
 	<script src="{{ static_url("js/jquery-1.10.2.js") }}"></script>
 	<script src="{{ static_url("js/jquery-ui-1.10.4.custom.js") }}"></script>
+	<link href="{{ static_url("css/foundation/normalize.css")}}" rel="stylesheet" >
+	<link href="{{ static_url("css/foundation/foundation.min.css")}}" rel="stylesheet" >	
+	<link href="{{ static_url("css/main.css")}}" rel="stylesheet" >
 </head>
 <body>
-	hola {{ user }}
-	<form enctype="multipart/form-data" action="/upload" method="post">
+	<form enctype="multipart/form-data" action="/upload" method="post" class='m50'>
+		<div class='row'>
+			<div class='small-12 column'>
+				<h1> ¡Hola <span class="capitalize">{{ user }}</span> !</h1>
+			</div>
+		</div>
 		<input type="file" name="file" required>
 		<input type="hidden" name='user' value="{{user}}" >
 		<input type="hidden" name='user_id' value="{{user_id}}" >
 		<input type="text" name='datepicker' id='datepicker' required readonly>
-		<input type="submit" value="Subir">
-		<input type='reset' value='Cancelar'>
+		<input type="submit" class='button radius success' value="Subir">
+		<input type='reset'  class='button radius alert'value='Cancelar'>
 	</form>
 	<br><br>
 	<a href="/logout">salir</a>
