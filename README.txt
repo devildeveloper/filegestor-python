@@ -1,6 +1,7 @@
 FILEGESTOR-PYtHON
 -----------------------------------------------------
 
+EL PROYECTO ESTA EN CONSTANTE DESARROLLO, AUN NO ESTA OPTIMIZADO
 
 Nombre clave : DroPy
 Licencia: Creative Commons(no comercial usage)
