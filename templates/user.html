@@ -6,32 +6,68 @@
 	<link href="{{ static_url("css/smoothness/jquery-ui-1.10.4.custom.css") }}" rel="stylesheet">
 	<script src="{{ static_url("js/jquery-1.10.2.js") }}"></script>
 	<script src="{{ static_url("js/jquery-ui-1.10.4.custom.js") }}"></script>
+	<script type="text/javascript" src="{{ static_url("js/foundation/foundation.min.js") }}" ></script>
+
 	<link href="{{ static_url("css/foundation/normalize.css")}}" rel="stylesheet" >
 	<link href="{{ static_url("css/foundation/foundation.min.css")}}" rel="stylesheet" >	
 	<link href="{{ static_url("css/main.css")}}" rel="stylesheet" >
 </head>
 <body>
-	<form enctype="multipart/form-data" action="/upload" method="post" class='m50'>
-		<div class='row'>
+	<header class="fixed">
+		<nav class="top-bar" data-topbar>
+			<ul class="title-area">
+				<li class="name"><h1><a href="#">Dropy</a></h1></li> <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone --> 
+				<li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
+			</ul>
+			<section class="top-bar-section"> 
+				<ul class="right">
+					<li class="active">
+						<a href="/getfiles">Listar Archivos</a>
+					</li>
+					<li >
+						<a href="/logout">Salir</a>						
+					</li>
+				</ul> 
+			</section>
+		</nav>
+	</header>
+	<form enctype="multipart/form-data" action="/upload" method="post" class='m100'>
+		<div class='row text-center m100'>
 			<div class='small-12 column'>
 				<h1> ¡Hola <span class="capitalize">{{ user }}</span> !</h1>
 			</div>
 		</div>
-		<input type="file" name="file" required>
-		<input type="hidden" name='user' value="{{user}}" >
-		<input type="hidden" name='user_id' value="{{user_id}}" >
-		<input type="text" name='datepicker' id='datepicker' required readonly>
-		<input type="submit" class='button radius success' value="Subir">
-		<input type='reset'  class='button radius alert'value='Cancelar'>
+		<fieldset class="row ">
+			<div class="small-12 column">
+				<label>
+					Elija un archivo en su equipo
+					<input type="file" name="file" required>
+				</label>
+			</div>
+			<div class="small-12 column">
+				<input type="hidden" name='user' value="{{user}}" >
+				<input type="hidden" name='user_id' value="{{user_id}}" >
+			</div>
+			<div class='small-12 column'>
+				<label>
+					Fecha de expiracion del enlace
+					<input type="text" name='datepicker' id='datepicker' required readonly>
+				</label>
+			</div>
+			<div class='small-12 column text-center'>
+				<input type="submit" class='button radius success' value="Subir">
+				<input type='reset'  class='button radius alert'value='Cancelar'>				
+			</div>
+		</fieldset>
 	</form>
-	<br><br>
-	<a href="/logout">salir</a>
-	<a href="/getfiles">Listar Archivos</a>
 	<script type="text/javascript">
 		$(document).on('ready',function(){
 			$("#datepicker").datepicker()
 			$("#datepicker").datepicker("option","dateFormat","yy-mm-dd")
 		})
+	</script>
+	<script>
+		$(document).foundation();
 	</script>
 </body>
 </html>
