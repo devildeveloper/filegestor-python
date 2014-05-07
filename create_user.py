@@ -21,8 +21,9 @@ if confirm == 's' :
 	except Exception as e:
 		print(e)
 	#creacion de su carpeta de uploads
-	try:		
-		if os.path.exists(os.path.join(os.getcwd(),'uploads')):
+	try:	
+		directorio='uploads/'+user_name	
+		if os.path.exists(os.path.join(os.getcwd(),directorio)):
 			print ' el directorio ya existe'
 		else:			
 			os.system('mkdir uploads/'+user_name)
