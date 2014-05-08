@@ -1,6 +1,6 @@
 import tornado.web
 from database import File,User, session
-from datetime import date
+import datetime 
 from tornado import httpclient 
 import os
 import json
@@ -49,6 +49,8 @@ class UploadHandler(tornado.web.RequestHandler):
 		die=self.get_argument("datepicker")#fecha de expiracion
 		output_file = open("uploads/"+user+"/" + original_fname, 'wb')
 		output_file.write(file1['body'])
+		if len(die) == 0 :
+			die=(datetime.datetime.utcnow()+datetime.timedelta(weeks=1)).date()		
 		#bbdd
 		_file=File(name=original_fname,user_id=int(user_id),expiration=die)
 		s=session()
