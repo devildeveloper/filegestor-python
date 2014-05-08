@@ -40,9 +40,9 @@
 					<div class="small-2 column">.</div>
 					<div class="small-8 column">
 						{% for file in files%}
-							<li class="m20" data-dropdown="">
+							<li class="m20" >
 								<a href="/{{user}}/{{file.name}}">{{file.name}}</a>
-								<span> created: {{file.hired_on}}</span>
+								<span> created: {{file.created}}</span>
 								<span>expiration: {{file.expiration}}</span>					
 							</li>	
 						{%end%}

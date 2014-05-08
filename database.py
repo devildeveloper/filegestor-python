@@ -15,7 +15,7 @@ class User(Base):
 class File(Base):
 	__tablename__='file'
 	id =Column(Integer,primary_key=True)
-	created=Column(Date,default=func.now())
+	created=Column(DateTime,default=func.now())
 	name=Column(String(50))
 	status=Column(Integer,default=1)
 	expiration=Column(Date,default=func.now())

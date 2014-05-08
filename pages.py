@@ -74,28 +74,28 @@ class UrlHandler(tornado.web.RequestHandler):
 				if(q1.count()==1):
 					q2=s.query(File).filter(File.user_id==q1[0].id,File.name==arch)
 					if(q2.count() > 0):
-						#if(q2[0].expiration < str(date.today())):
-						_file_dir = os.path.abspath("")+"/uploads/"+user
-						_file_path = "%s/%s" % (_file_dir, arch)
-						if not arch or not os.path.exists(_file_path):
-							raise httpclient.HTTPError(404)
-						self.set_header('Content-Type', 'application/force-download')
-						self.set_header('Content-Disposition', 'attachment; filename=%s' % arch)
-						with open(_file_path, "rb") as f:
-							try:
-								while True:
-									_buffer = f.read(4096)
-									if _buffer:
-										self.write(_buffer)
-									else:
-										f.close()
-										self.finish()
-										return
-							except:
+						if(q2[0].expiration > datetime.date.today()):
+							_file_dir = os.path.abspath("")+"/uploads/"+user
+							_file_path = "%s/%s" % (_file_dir, arch)
+							if not arch or not os.path.exists(_file_path):
 								raise httpclient.HTTPError(404)
-						raise httpclient.HTTPError(500)
-						#else:
-						#	self.write('expired link')
+							self.set_header('Content-Type', 'application/force-download')
+							self.set_header('Content-Disposition', 'attachment; filename=%s' % arch)
+							with open(_file_path, "rb") as f:
+								try:
+									while True:
+										_buffer = f.read(4096)
+										if _buffer:
+											self.write(_buffer)
+										else:
+											f.close()
+											self.finish()
+											return
+								except:
+									raise httpclient.HTTPError(404)
+							raise httpclient.HTTPError(500)
+						else:
+							self.write('expired link')
 					else:
 						self.write('invalid file')
 				else:
