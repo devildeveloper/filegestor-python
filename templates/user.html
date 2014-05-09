@@ -31,6 +31,12 @@
 			</section>
 		</nav>
 	</header>
+	{% try %}
+		<h3> file {{ file }} upload</h3>
+	{ % except %}
+		<h3>lol</h3>
+	{% end %}
+
 	<form enctype="multipart/form-data" action="/upload" method="post" class='m100'>
 		<div class='row text-center m100'>
 			<div class='small-12 column'>

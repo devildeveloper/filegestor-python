@@ -22,7 +22,16 @@ class IndexHandler(tornado.web.RequestHandler):
 
 class LoginHandler(tornado.web.RequestHandler):
 	def get(self):
-		self.render('login.html')
+		try:
+			user=self.get_secure_cookie("user")		
+			data=json.loads(user)	
+			s=session()		
+			if(s.query(User).filter(User.id==int(data['user_id']),
+									User.name==data['user'].encode('utf8'),User.status==1)
+								.count() == 1):
+				self.render('user.html',user=data['user'],user_id=data['user_id'])
+		except:			
+			self.render('login.html')
 	def post(self):
 		flag =False
 		s=session()
@@ -41,6 +50,8 @@ class LogoutHandler(tornado.web.RequestHandler):
 		self.redirect(self.get_argument("next", "/"))
 
 class UploadHandler(tornado.web.RequestHandler):
+	def get(self):
+		self.redirect('/')
 	def post(self):		
 		file1 = self.request.files['file'][0]
 		original_fname = file1['filename']
@@ -106,16 +117,19 @@ class GetMyFiles(tornado.web.RequestHandler):
 	#def get(self):
 	#	self.write('no autorizado')
 	def get(self):
-		user=self.get_secure_cookie("user")		
-		data=json.loads(user)	
-		s=session()		
-		if(s.query(User).filter(User.id==int(data['user_id']),User.name==data['user'].encode('utf8'),User.status==1).count() == 1):
-			_files=s.query(File).filter(File.user_id==data['user_id'],File.status==1).all()
-			self.render('user-files.html',user=data['user'],files=_files)
+		try:
+			user=self.get_secure_cookie("user")		
+			data=json.loads(user)	
+			s=session()		
+			if(s.query(User).filter(User.id==int(data['user_id']),User.name==data['user'].encode('utf8'),User.status==1).count() == 1):
+				_files=s.query(File).filter(File.user_id==data['user_id'],File.status==1).all()
+				self.render('user-files.html',user=data['user'],files=_files)
+		except:
+			self.redirect('/')
 
 class Perfil(tornado.web.RequestHandler):
 	def post(self):
-		self.write('no se porque estas viendo esto..')
+		self.redirect('/')
 	def get(self):
 		try:
 			user=self.get_secure_cookie("user")		
