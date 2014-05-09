@@ -2,7 +2,6 @@
 import os.path
 
 import base64
-import uuid
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
@@ -18,7 +17,7 @@ class Application(tornado.web.Application):
 			template_path=os.path.join(os.path.dirname(__file__), "templates"),
 			static_path=os.path.join(os.path.dirname(__file__), "static"),
 			debug=True,
-			cookie_secret= base64.b64encode(uuid.uuid4().bytes)
+			cookie_secret= base64.b64encode('!"#$%&/()={}+.,-13258797')
 		)
 		tornado.web.Application.__init__(self, handlers, **settings)
 
