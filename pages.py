@@ -13,7 +13,9 @@ class IndexHandler(tornado.web.RequestHandler):
 			user=self.get_secure_cookie("user")		
 			data=json.loads(user)	
 			s=session()		
-			if(s.query(User).filter(User.id==int(data['user_id']),User.name==data['user'].encode('utf8'),User.status==1).count() == 1):
+			if(s.query(User).filter(User.id==int(data['user_id']),
+									User.name==data['user'].encode('utf8'),User.status==1)
+								.count() == 1):
 				self.render('user.html',user=data['user'],user_id=data['user_id'])
 		except:			
 			self.render('index.html')
@@ -23,15 +25,13 @@ class LoginHandler(tornado.web.RequestHandler):
 		self.render('login.html')
 	def post(self):
 		flag =False
-		users=session().query(User).all()#hago la consulta a la base de datos
-		if(len(users) > 0):
-			for dato in users :
-				if dato.name == self.get_argument("user") and dato.passw==self.get_argument("pass"):					
-					vjson={'user_id':dato.id,'user':dato.name}					
-					#print json.dumps({'user_id':dato.id,'user':dato.name},sort_keys=True,indent=4)
-					self.set_secure_cookie("user", json.dumps(vjson))
-					self.render('user.html',user=dato.name,user_id=dato.id)
-					break		
+		s=session()
+		r=s.query(User).filter(User.passw==self.get_argument("pass"),
+								User.name==self.get_argument("user"))
+		if r.count() ==1:	
+			vjson={'user_id':r[0].id,'user':r[0].name}						
+			self.set_secure_cookie("user", json.dumps(vjson))
+			self.render('user.html',user=r[0].name,user_id=r[0].id)	
 		else:
 			self.redirect('/')
 
